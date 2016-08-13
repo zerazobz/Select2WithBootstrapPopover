@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Playing with Select2 and Bootstrap PopOver</title>
+	<script   src="https://code.jquery.com/jquery-3.1.0.min.js"   integrity="sha256-cCueBR6CsyA4/9szpPfrX3s49M9vUU5BgtiJj06wt/s="   crossorigin="anonymous"></script>
+
+	<script type="text/javascript" src=https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js></script>
+	<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css">
+
+	<script type="text/javascript" src="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+	<script type="text/javascript" src=https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.5/handlebars.min.js></script>
+	<link rel="stylesheet" type="text/css" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
+	<style type="text/css">
+		.popover-title, .popover-content {
+			color: #444;
+		}
+
+		.popover {
+			width: 400px;
+			max-width: none;
+		}
+	</style>
+</head> 
+	<body>
+		<div class="container">
+		  <div class="row">
+		    <div class="col-md-6" style="">
+		    	<select id="aSelect" style="width: 300px;">
+					<optgroup label="Regulares">
+					  <option data-coursename="Espanhol Basico 1" data-classroom="A76" data-schedulecode="78451" data-description="12:00-17:00 Lun, Mar, Mie, Jue" value="2">Espanhol Basico 1</option>
+					  <option data-coursename="Ingles Basico 2" data-classroom="B23" data-schedulecode="8965" data-description="07:00-12:00 Lun, Mar, Mie, Jue, Vie" value="3">Ingles Basico 2</option>
+					  <option data-coursename="Chino Intermedio 2" data-classroom="C98" data-schedulecode="96541" data-description="09:00-18:00 Sab" value="4">Chino Intermedio 2</option>
+					</optgroup>
+					<optgroup label="Intensivos">
+					  <option data-coursename="Portugues Basico 2" data-classroom="D784" data-schedulecode="451" data-description="Intensivo 15/07/2016-21/07/2016" value="26">Portugues Intensivo 2</option>
+					  <option data-coursename="Frances Intermedio 4" data-classroom="K32" data-schedulecode="562" data-description="Intensivo 13/02, 14/02, 16/02, 18/02, 20/02" value="29">Frances Intensivo 4</option>
+					</optgroup>
+				</select>
+		    </div>
+		  </div>
+		  
+		  <!-- <div class="row">
+		    <div class="col-md-6">
+		      <button id="buttonWithPopOver" type="button" class="btn btn-primary">Pop Up</button>
+		    </div>
+		  </div>   -->
+		</div>
+
+		<div id="anewtemplate" style="display: none;">
+		  <div class="row" style="background-color: hotpink;">
+		    <p>ja ja ja</p>
+		  </div>
+		</div>
+
+		<div id="customtemplate" style="display: none;">
+		  <div class="popover" role="tooltip">
+		    <div class="arrow"></div>
+		    <h3 class="popover-title"></h3>
+		      <div class="popover-content">
+
+		      </div>
+		    </div>
+		</div>
+
+		<script id="listitemtemplate" type="text/x-handlebars-template">
+			<div style="display: table">
+				<div style="display: table-row;">
+					<div style="display: table-cell;">
+						<p><span style="font-weight: bold;">Curso:</span> {{ CourseName }}</p>
+					</div>
+					<div style="display: table-cell;">
+						<p> <span style="font-weight: bold;">Aula:</span> {{ ClassRoom }}</p>
+					</div>
+				</div>
+				<div style="display: table-row;">
+					<div style="display: table-cell;">
+						<p><span style="font-weight: bold;">Código Horario: </span></p>
+					</div>
+					<div style="display: table-cell;">
+						<p>{{ ScheduleCode }}</p>
+					</div>
+				</div>
+				<div style="display: table-row;">
+					<div style="display: table-cell;">
+						<p>{{ Description }}</p>
+					</div>
+				</div>
+			</div>
+		</script>
+
+		<script type="text/javascript">
+			function ListItemBuilder(state) {
+			  if (!state.id) {
+			  	return state.text;
+			  }
+
+			  var courseName = $(state.element).data("coursename");
+			  var classRoom = $(state.element).data("classroom");
+			  var scheduleCode = $(state.element).data("schedulecode");
+			  var description = $(state.element).data("description");
+
+			  var $innerElement = $("<p></p>").attr("class", "itempopover").attr("data-coursename", courseName)
+			  	.attr("data-classroom", classRoom).attr("data-schedulecode", scheduleCode)
+			  	.attr("data-description", description)
+			  .text(state.element.text.toLowerCase()).prop("outerHTML");
+
+			  return $($innerElement);
+			}
+
+			$(function() {
+
+				$('#aSelect').select2({
+					templateResult: ListItemBuilder
+				});
+
+				$(document).on("mouseover", ".itempopover", null, function(e) {
+					var $that = $(this);
+					$that.popover({
+				    	trigger: 'hover',
+				    	// delay: {
+				    	// 	hide: '1500'
+				    	// },
+					  	html: true,
+					  	content: function() {
+					  		var courseName = $that.data("coursename");
+							var classRoom = $that.data("classroom");
+							var scheduleCode = $that.data("schedulecode");
+							var description = $that.data("description");
+
+					  		var htmlTemplate = $("#listitemtemplate").html();
+					  		var handletemplate = Handlebars.compile(htmlTemplate);
+					  		var data = {
+					  			CourseName: courseName,
+					  			ClassRoom: classRoom,
+					  			ScheduleCode: scheduleCode,
+					  			Description: description
+					  		};
+					  		var htmlgenerated = handletemplate(data);
+					  		return htmlgenerated;
+					  	},
+					  	title: 'Detalle del curso'
+				    });
+				});
+
+				$('#buttonWithPopOver').popover({
+					trigger: 'hover',
+				  	html: true,
+				  	content: function() {
+				    	return $("#anewtemplate").html();
+				  	},
+				  	title: 'Detalle del curso'
+				});
+
+			});
+		</script>
+	</body>
+</html>
