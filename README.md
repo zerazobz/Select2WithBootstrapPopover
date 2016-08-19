@@ -11,5 +11,6 @@ Plugins used:
 * Handlebars
  
 ### Result ###
+https://www.dropbox.com/s/07gnb3gmxp78df2/New%20Selector%20of%20Schedules.gif?dl=0
 
-![Alt text](https://dl.dropboxusercontent.com/content_link/VjwF2ZbtpH4ZR71PAxqHaDOpVNhw5pIyb858ANaGWqvT2UhuRIiV2KrGH4hqPd4B/file?duc_id=jgIwQxTHWOWVUJiGrXdnSwVVm31sO8RUEGNHLuyVtnEfA1KmihAEBAczdSgHQ29p&dl=0&size=1280x960&size_mode=3 "Select2 with PopOver")
+![Alt text](https://www.dropbox.com/s/07gnb3gmxp78df2/New%20Selector%20of%20Schedules.gif?dl=0 "Select2 with PopOver")
